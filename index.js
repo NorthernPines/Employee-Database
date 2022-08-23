@@ -138,12 +138,12 @@ async function addRole() {
         .prompt(questions)
         .then((data) => {
             console.log('test');
-            db.query(`INSERT INTO departments (department_name)
-                    VALUES (?);`, [data.department], function (err, data) {
+            db.query(`INSERT INTO roles (title, salary)
+                    VALUES (?);`, [data.role, data.salary], function (err, data) {
                 if (err) {
                     throw err;
                 }
-                console.table('Successfully added department!');
+                console.table('Successfully added role!');
                 question();
             });
         })
