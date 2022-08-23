@@ -57,32 +57,124 @@ function question() {
 
 
 function viewDepartments() {
-    db.query('SELECT * FROM departments', function(err, data) {
+    db.query('SELECT * FROM departments', function (err, data) {
         if (err) {
             throw err;
-        } 
+        }
         console.table(data);
         question();
     })
 }
 
 function viewRoles() {
-    db.query('SELECT * FROM roles', function(err, data) {
+    db.query('SELECT * FROM roles', function (err, data) {
         if (err) {
             throw err;
-        } 
+        }
         console.table(data);
         question();
     })
 }
 
 function viewEmployees() {
-    db.query('SELECT * FROM employees', function(err, data) {
+    db.query('SELECT * FROM employees', function (err, data) {
         if (err) {
             throw err;
-        } 
+        }
         console.table(data);
         question();
     })
 }
 
+function addDepartment() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'What is the new department\'s name?',
+                name: 'department'
+            }
+        ])
+        .then((data) => {
+            db.query(`INSERT INTO departments (department_name)
+                    VALUES (?);`, [data.department], function (err, data) {
+                if (err) {
+                    throw err;
+                }
+                console.table('Successfully added department!');
+                question();
+            });
+        })
+}
+
+async function addRole() {
+    const depList = await db.promise().query('SELECT * FROM departments');;
+
+    let shortenedDepList = [];
+    for (i = 0; i < depList[0].length; i++) {
+        if (!shortenedDepList.includes(depList[0][i].department_name)) {
+            shortenedDepList.push(depList[0][i].department_name)
+        }
+    }
+    console.log(shortenedDepList);
+    const questions = [
+{
+    type: 'input',
+    message: 'What is the new role\'s name?',
+    name: 'role'
+},
+{
+    type: 'input',
+    message: 'What is the salary of that role?',
+    name: 'salary'
+},
+{
+    type: 'list',
+    message: 'What department is that role in?',
+    name: 'department',
+    choices: shortenedDepList
+}]
+    inquirer
+        .prompt(questions)
+        .then((data) => {
+            console.log('test');
+            db.query(`INSERT INTO departments (department_name)
+                    VALUES (?);`, [data.department], function (err, data) {
+                if (err) {
+                    throw err;
+                }
+                console.table('Successfully added department!');
+                question();
+            });
+        })
+}
+
+function getDepList() {
+    // async function f() {
+    // const depList = db.query('SELECT * FROM departments', (err, data) => {
+    //     if (err) {
+    //         throw err;
+    //     }
+    //     let shortenedDepList = [];
+    //     for (i = 0; i < data.length; i++) {
+    //         if (!shortenedDepList.includes(data[i].department_name)) {
+    //             shortenedDepList.push(data[i].department_name)
+    //         }
+    //     }
+    //     console.log(shortenedDepList);
+    //     return (shortenedDepList);
+    // });
+    // }
+}
+
+function addEmployee() {
+
+}
+
+function updateRole() {
+
+}
+
+// choices: [{name: 'HR', value: 1}]
+// var test = getDepList();
+// console.log(test);
